@@ -1,9 +1,10 @@
 // TODO: Include packages needed for this application
 const fs = require("fs");
-const util = require("util")
+const util = require("util");
+const path = require('path')
 const inquirer = require("inquirer");
 // Link back to the page where the README is developed
-var generateMarkdown = require("./utils/generateMarkdown.js");
+const generateMarkdown = require("./utils/generateMarkdown.js");
 // TODO: Create an array of questions for user input
 function promptUser () {
     return inquirer.prompt([
@@ -38,17 +39,17 @@ function promptUser () {
                 "ISC",
                 "MIT",
                 "Mozilla",
-                "open",
+                "Open",
             ]
         },
         {
             type: "input",
-            name: "contributing",
+            name: "contributors",
             message: "who are the contributors of this project",
         },
         {
             type: "input",
-            name: "tests",
+            name: "test",
             message: "Is there a test included?",
         },
         {
@@ -64,21 +65,18 @@ function promptUser () {
         {
             type: "input",
             name: "email",
-            message: "Please entere your email: "
+            message: "Please enter your email: "
         }
     ]);
 }
 // TODO: Create a function to write README file
 function init () {
-    try {
-        const answers = await promptUser();
-        const generateMarkdown = generateMarkdown(answers);
-        await ('./utils/generateMarkdown.js', generateMarkdown);
-        console.log('Succesfully wrote to ReadME.md');
-    }
-    catch(err) {
+    promptUser().then((answers) => {
+        fs.writeFileSync(path.join(process.cwd(), 'README.md'), generateMarkdown({...answers}))
+    })
+    .catch((err) => {
         console.log(err);
-    }
+    })
 }
 
 init();
